@@ -1,0 +1,1303 @@
+<!doctype html>
+<html lang="id">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>💖 Truth or Dare Bareng Pasangan 💖</title>
+
+  <!-- Google Fonts (opsional - fallback disediakan) -->
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@300;400;700&family=Poppins:wght@300;400;700&display=swap" rel="stylesheet">
+
+  <style>
+    :root{
+      --pink:#FEE6EC;
+      --blue:#E6F3FF;
+      --white:#FFFFFF;
+      --muted:#F6F6F7;
+      --text:#2b2b2b;
+      --card-radius:18px;
+      --btn-radius:14px;
+      --shadow: 0 8px 20px rgba(24,24,24,0.08);
+      --glass: rgba(255,255,255,0.6);
+    }
+    /* Dark theme vars (applies when .dark on body) */
+    body.dark{
+      --pink:#2c1420;
+      --blue:#0f2233;
+      --white:#0f1720;
+      --muted:#111214;
+      --text:#f0f6ff;
+      --glass: rgba(255,255,255,0.04);
+      --shadow: 0 8px 24px rgba(0,0,0,0.6);
+    }
+
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{
+      margin:0;
+      font-family: "Poppins", "Nunito", system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+      background: linear-gradient(135deg,var(--pink),var(--blue));
+      color:var(--text);
+      -webkit-font-smoothing:antialiased;
+      -moz-osx-font-smoothing:grayscale;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      padding:24px;
+      transition:background 400ms ease, color 300ms ease;
+    }
+
+    /* App container */
+    .app{
+      width:100%;
+      max-width:920px;
+      background: linear-gradient(180deg, rgba(255,255,255,0.9), rgba(255,255,255,0.75));
+      border-radius:22px;
+      padding:22px;
+      box-shadow:var(--shadow);
+      backdrop-filter: blur(6px);
+      position:relative;
+      overflow:hidden;
+    }
+    body.dark .app{
+      background: linear-gradient(180deg, rgba(12,14,17,0.8), rgba(5,8,12,0.6));
+    }
+
+    /* Header / Landing */
+    .landing{
+      text-align:center;
+      padding:32px 20px;
+    }
+    .logo{
+      font-size:28px;
+      font-weight:700;
+      display:inline-flex;
+      gap:10px;
+      align-items:center;
+      justify-content:center;
+    }
+    .logo .heart{
+      display:inline-block;
+      font-size:28px;
+      transform-origin:center;
+      animation: pulse 1500ms infinite;
+    }
+    @keyframes pulse{
+      0%{ transform: scale(1); opacity:1}
+      50%{ transform: scale(1.18); opacity:0.9}
+      100%{ transform: scale(1); opacity:1}
+    }
+    .desc{ color: #6b6b6b; margin-top:8px; font-size:15px; max-width:720px; margin-left:auto; margin-right:auto}
+    .cta{
+      margin-top:22px;
+      display:flex;
+      gap:12px;
+      justify-content:center;
+      flex-wrap:wrap;
+    }
+    .btn{
+      background:var(--white);
+      padding:14px 22px;
+      border-radius:var(--btn-radius);
+      cursor:pointer;
+      border:0;
+      font-weight:700;
+      box-shadow: var(--shadow);
+      transition: transform 160ms ease, box-shadow 160ms ease, opacity 160ms;
+    }
+    .btn:hover{ transform: translateY(-4px) }
+    .btn.primary{
+      background: linear-gradient(90deg,#ffdee8,#ffeef7);
+      color:#991b4d;
+      font-size:16px;
+    }
+    .footer{
+      margin-top:18px;
+      font-size:13px;
+      color:#7b7b7b;
+      text-align:center;
+    }
+
+    /* Game screen */
+    .game{
+      display:none;
+      padding:18px;
+    }
+    .game.active{ display:block }
+
+    .topbar{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:12px;
+      margin-bottom:18px;
+    }
+    .top-left{
+      display:flex;
+      gap:12px;
+      align-items:center;
+    }
+    .title{
+      font-size:20px;
+      font-weight:800;
+      display:flex;
+      gap:8px;
+      align-items:center;
+    }
+    .title .pulse-small{
+      animation: pulse 1600ms infinite;
+      font-size:20px;
+    }
+    .gear{
+      cursor:pointer;
+      background:var(--glass);
+      border-radius:12px;
+      padding:8px;
+      box-shadow:var(--shadow);
+    }
+
+    /* Card question */
+    .card{
+      background:var(--white);
+      padding:28px;
+      border-radius:22px;
+      min-height:160px;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      text-align:center;
+      font-size:20px;
+      font-weight:600;
+      box-shadow:var(--shadow);
+      margin-bottom:18px;
+      transition: transform 350ms ease, opacity 300ms ease;
+      position:relative;
+      overflow:hidden;
+    }
+    body.dark .card{ background: rgba(255,255,255,0.03) }
+
+    /* Controls */
+    .controls{
+      display:flex;
+      gap:12px;
+      flex-wrap:wrap;
+      justify-content:center;
+      margin-bottom:8px;
+    }
+    .secondary{
+      background:transparent;
+      border:1px solid rgba(0,0,0,0.06);
+    }
+    body.dark .secondary{ border:1px solid rgba(255,255,255,0.06) }
+
+    .small-row{ display:flex; gap:10px; justify-content:center; margin-top:8px; flex-wrap:wrap }
+
+    /* Modal */
+    .modal-backdrop{
+      position:fixed;
+      inset:0;
+      background:rgba(12,12,12,0.45);
+      display:none;
+      align-items:center;
+      justify-content:center;
+      z-index:80;
+    }
+    .modal-backdrop.active{ display:flex }
+    .modal{
+      background:var(--white);
+      border-radius:14px;
+      padding:18px;
+      width:90%;
+      max-width:640px;
+      box-shadow:var(--shadow);
+    }
+    body.dark .modal{ background: rgba(8,10,12,0.9) }
+
+    /* Favorites list */
+    .fav-list{ max-height:360px; overflow:auto; padding-right:6px }
+    .fav-item{ padding:10px; border-radius:12px; background:var(--muted); margin-bottom:8px; display:flex; gap:10px; align-items:flex-start}
+    body.dark .fav-item{ background: rgba(255,255,255,0.03) }
+
+    /* small helpers */
+    .muted{ color:#5f5f5f; font-size:13px }
+    .tag{ font-size:13px; padding:6px 8px; border-radius:999px; background:rgba(0,0,0,0.04); display:inline-block }
+    body.dark .tag{ background: rgba(255,255,255,0.04) }
+
+    /* Responsive */
+    @media (max-width:640px){
+      .card{ font-size:18px; padding:18px; min-height:150px }
+      .logo{ font-size:20px }
+    }
+
+    /* animations for showing questions */
+    .fade-in{
+      animation: fadeInUp 420ms ease both;
+    }
+    @keyframes fadeInUp{
+      from{ opacity:0; transform: translateY(16px) scale(0.996) }
+      to{ opacity:1; transform: translateY(0) scale(1) }
+    }
+
+    /* confetti canvas */
+    #confetti-canvas{ position: absolute; inset:0; pointer-events:none; z-index:60 }
+  </style>
+</head>
+<body>
+  <div class="app" role="application" aria-label="Truth or Dare Bareng Pasangan">
+    <!-- Confetti canvas -->
+    <canvas id="confetti-canvas"></canvas>
+
+    <!-- LANDING -->
+    <section class="landing" id="landing">
+      <div class="logo">
+        <span class="heart">💖</span>
+        <div>
+          <div style="font-size:22px; font-weight:800">Truth or Dare Bareng Pasangan</div>
+          <div style="font-size:13px; color: #8a8a8a">Permainan seru buat kalian berdua — pertanyaan selalu acak setiap buka web</div>
+        </div>
+      </div>
+
+      <p class="desc">Mainkan permainan seru bareng pasanganmu! Setiap kali kamu buka web ini, pertanyaannya selalu baru dan acak.</p>
+
+      <div class="cta">
+        <button class="btn primary" id="startBtn">Mulai Permainan 💫</button>
+        <button class="btn" id="howBtn">Cara Main</button>
+      </div>
+
+      <div class="footer">Created with ❤️</div>
+    </section>
+
+    <!-- GAME -->
+    <section class="game" id="gameScreen" aria-hidden="true">
+      <div class="topbar">
+        <div class="top-left">
+          <div class="title">Truth or Dare Time <span class="pulse-small">💞</span></div>
+          <div class="muted" style="margin-left:8px; font-size:13px">Mainkan bersama pasangan</div>
+        </div>
+        <div style="display:flex; gap:8px; align-items:center">
+          <div class="tag" id="modeTag">Mode: Mixed</div>
+          <div class="gear" id="settingsBtn" title="Pengaturan ⚙️">⚙️</div>
+        </div>
+      </div>
+
+      <div class="card fade-in" id="questionCard">
+        <div id="questionText">Tekan Truth / Dare untuk mulai 🎲</div>
+      </div>
+
+      <div class="controls" role="group" aria-label="primary controls">
+        <button class="btn" id="truthBtn">Truth 💬</button>
+        <button class="btn" id="dareBtn">Dare 🔥</button>
+      </div>
+
+      <div class="small-row">
+        <button class="btn secondary" id="nextBtn">🔄 Next Question</button>
+        <button class="btn secondary" id="shuffleBtn">🎲 Shuffle All</button>
+        <button class="btn" id="favBtn">❤️ Favoritkan</button>
+        <button class="btn secondary" id="modeBtn">💡 Mode Romantis / Lucu</button>
+      </div>
+
+      <div style="display:flex; justify-content:center; gap:8px; margin-top:12px; flex-wrap:wrap;">
+        <button class="btn secondary" id="myFavs">⭐ Favoritku</button>
+        <button class="btn secondary" id="resetBtn">🔁 Reset Permainan</button>
+        <button class="btn secondary" id="backHome">🏠 Kembali</button>
+      </div>
+    </section>
+
+    <!-- MODALS -->
+    <div class="modal-backdrop" id="modalBackdrop" aria-hidden="true">
+      <div class="modal" role="dialog" aria-modal="true" id="modalContent">
+        <!-- content filled by JS -->
+      </div>
+    </div>
+
+  </div>
+
+  <script>
+    /**************************************************************************
+     * Data & Setup
+     * - questions: array of 1000 generated placeholder questions
+     * - each item: { id, type: 'truth'|'dare', mood: 'romantic'|'funny', text }
+     **************************************************************************/
+
+    // Utility: generate 1000 placeholder questions (mix truth & dare, romantic & funny)
+    const questions = (() => {
+      const arr = [];
+      const truthPrompts = [
+        "Apa hal paling lucu tentang pasanganmu?",
+        "Kapan pertama kali kamu jatuh cinta padanya?",
+        "Apa yang paling kamu kagumi dari pasanganmu?",
+        "Sebutkan satu rahasia kecil yang belum pernah kamu ceritakan.",
+        "Apa kenangan paling manis kalian berdua?",
+        "Apa momen paling memalukan yang pernah kalian alami bareng?",
+        "Jika bisa minta satu hadiah besar dari pasanganmu, apa itu?",
+        "Apa kebiasaan lucu pasangan yang selalu membuatmu tersenyum?",
+        "Hal apa yang ingin kamu ubah dari dirimu demi pasangan?",
+        "Apa lagu yang selalu mengingatkanmu padanya?",
+        "Apa hal paling lucu tentang pasanganmu?",
+        "Kapan pertama kali kamu jatuh cinta padanya?",
+        "Apa yang paling kamu kagumi dari pasanganmu?",
+        "Sebutkan satu rahasia kecil yang belum pernah kamu ceritakan.",
+        "Apa kenangan paling manis kalian berdua?",
+        "Apa momen paling memalukan yang pernah kalian alami bareng?",
+        "Jika bisa minta satu hadiah besar dari pasanganmu, apa itu?",
+        "Apa kebiasaan lucu pasangan yang selalu membuatmu tersenyum?",
+        "Hal apa yang ingin kamu ubah dari dirimu demi pasangan?",
+        "Apa lagu yang selalu mengingatkanmu padanya?",
+        "Apa hal pertama yang membuatmu jatuh cinta padanya?",
+        "Siapa yang biasanya minta maaf duluan kalau kalian berdua bertengkar?",
+        "Apa kebiasaan kecil pasanganmu yang diam-diam kamu suka?",
+        "Kalau kamu bisa menggambarkan pasanganmu dengan satu kata, apa itu?",
+        "Kapan terakhir kali kamu merasa benar-benar bahagia bersamanya?",
+        "Apa hal paling konyol yang pernah kalian lakukan bareng?",
+        "Apa hal paling romantis yang pasanganmu pernah lakukan untukmu?",
+        "Kalau pasanganmu jadi superhero, kekuatannya apa menurutmu?",
+        "Apa hal yang selalu bikin kamu senyum saat inget dia?",
+        "Kalau kamu bisa mengulang satu momen bareng pasangan, momen apa itu?",
+        "Hal apa yang paling bikin kamu insecure di depan pasanganmu?",
+        "Kalau kamu harus kasih nilai 1–10 buat chemistry kalian, berapa?",
+        "Apa hal yang paling kamu rindukan saat dia nggak ada?",
+        "Siapa yang lebih sering mulai chat duluan?",
+        "Apa hal yang kamu sembunyikan tapi pengen dia tahu?",
+        "Kalau kamu bisa baca pikiran pasanganmu sehari, kamu mau tahu apa?",
+        "Kapan kamu sadar bahwa dia benar-benar spesial?",
+        "Apa hal paling lucu yang dia lakukan tanpa sadar?",
+        "Siapa yang paling sering ngelucu tapi garing?",
+        "Hal kecil apa yang selalu bikin kamu teringat dia?",
+        "Apa hal yang paling kamu takut kehilangan darinya?",
+        "Siapa di antara kalian yang paling gampang cemburu?",
+        "Kalau pasanganmu tiba-tiba hilang seminggu, apa yang kamu lakukan?",
+        "Apa rahasia kecil yang belum kamu ceritakan ke dia?",
+        "Apa hal paling konyol yang pernah kalian ributkan?",
+        "Kalau kalian bisa pergi liburan impian berdua, ke mana?",
+        "Apa hal paling berkesan dari kencan pertama kalian?",
+        "Siapa yang pertama kali nembak?",
+        "Apa hal yang paling kamu banggakan dari pasanganmu?",
+        "Kalau pasanganmu jadi hewan, dia cocoknya jadi apa?",
+        "Apa hal paling lucu yang pernah kamu lihat dari pasanganmu?",
+        "Siapa yang paling sering baper?",
+        "Kalau pasanganmu jadi lagu, judulnya apa?",
+        "Apa hal kecil yang kamu syukuri setiap hari dari hubungan kalian?",
+        "Siapa yang lebih sering ngambek tanpa alasan jelas?",
+        "Apa hal yang paling kamu suka dari senyumnya?",
+        "Kapan terakhir kali kamu bikin dia ketawa ngakak?",
+        "Apa hal paling aneh yang dia suka tapi kamu tetap dukung?",
+        "Siapa yang paling sering bilang ‘aku lapar’?",
+        "Kalau kalian punya rumah bareng, siapa yang lebih suka dekorasi?",
+        "Apa warna yang paling ngingetin kamu sama dia?",
+        "Siapa yang paling romantis di antara kalian berdua?",
+        "Apa hal paling manis yang pernah kalian lakukan bareng?",
+        "Kalau pasanganmu tiba-tiba berubah jadi selebriti, kamu bakal bangga atau cemburu?",
+        "Apa kebiasaan dia yang awalnya ganggu tapi sekarang kamu rindukan?",
+        "Siapa yang paling banyak foto di galeri HP kamu?",
+        "Apa hal yang kamu pelajari tentang cinta dari pasanganmu?",
+        "Siapa yang paling sering nyebutin ‘kangen’ duluan?",
+        "Apa hal kecil yang selalu bikin kamu tenang saat dia di dekatmu?",
+        "Kalau kamu bisa ubah satu hal dari masa lalu kalian, apa itu?",
+        "Apa momen paling lucu saat video call bareng?",
+        "Siapa yang paling sering ngasih emot 💕 waktu chat?",
+        "Apa makanan favorit yang selalu kalian makan bareng?",
+        "Kalau kamu harus kasih hadiah spontan ke dia, apa yang kamu pilih?",
+        "Siapa yang paling nggak bisa tidur tanpa bilang selamat malam dulu?",
+        "Apa hal yang paling bikin kamu merasa disayang?",
+        "Kapan pertama kali kalian saling genggam tangan?",
+        "Siapa yang paling sering lupa tanggal penting?",
+        "Kalau pasanganmu dalam satu kata? (Jujur ya 😆)",
+        "Apa hal paling romantis yang kamu bayangin kalau kalian menikah nanti?",
+        "Siapa yang paling suka gombal?",
+        "Kalau pasanganmu marah, kamu biasanya ngapain?",
+        "Apa hal yang paling bikin kamu terharu darinya?",
+        "Kalau hubungan kalian film, genrenya apa?",
+        "Siapa yang paling cerewet di antara kalian?",
+        "Apa hal kecil yang bikin kamu jatuh cinta ulang tiap hari?",
+        "Siapa yang paling sering bercanda receh?",
+        "Apa hal yang bikin kamu yakin hubungan ini serius?",
+        "Siapa yang paling lama balas chat?",
+        "Apa hal yang pengen kamu lakukan bareng tapi belum sempat?",
+        "Kalau kamu harus nyanyi satu lagu buat dia, lagu apa?",
+        "Siapa yang paling jago minta perhatian?",
+        "Apa hal yang bikin kamu bersyukur punya dia?",
+        "Siapa yang paling sering bikin drama kecil tapi lucu?",
+        "Apa hal yang kamu mau perbaiki dari dirimu buat dia?",
+        "Siapa yang paling suka peluk duluan?",
+        "Apa hal paling kocak yang pernah terjadi saat kencan?",
+        "Kalau kalian tukar tubuh sehari, kamu bakal ngapain?",
+        "Siapa yang paling sering lupa naro barang?",
+        "Apa emoji yang paling menggambarkan hubungan kalian?",
+        "Apa hal paling lucu dari cara dia bicara?",
+        "Siapa yang paling jago bikin wajah imut?",
+        "Kalau pasanganmu jadi film, kamu kasih rating berapa?",
+        "Apa hal yang bikin kamu ngakak kalau inget dia?",
+        "Siapa yang lebih sering mengalah?",
+        "Apa momen paling tak terlupakan di antara kalian?",
+        "Siapa yang paling sering ngelucu tapi malah bikin ilfeel?",
+        "Apa hal yang kamu nggak bisa ceritain ke orang lain selain ke dia?",
+        "Siapa yang lebih ekspresif dalam menunjukkan sayang?",
+        "Apa hal yang pengen kamu ucapin tapi belum sempat?",
+        "Siapa yang paling manja waktu sakit?",
+        "Apa hal yang bikin kamu kagum sama dia?",
+        "Siapa yang paling sering ngirim foto lucu random?",
+        "Apa hal yang kamu pengen dia tahu tanpa kamu ngomong?",
+        "Siapa yang paling sering bilang ‘aku ngantuk’ tapi nggak tidur-tidur?",
+        "Apa hal yang bikin kamu sadar kalau kamu cinta beneran?",
+        "Siapa yang paling sering lupa janji kecil?",
+        "Siapa yang paling sering bikin kamu ketawa tanpa alasan?",
+        "Apa hal pertama yang kamu pikirkan tiap kali bangun dan inget dia?",
+        "Siapa yang paling sering minta maaf meskipun bukan salahnya?",
+        "Apa hal paling bodoh tapi lucu yang pernah kalian debatkan?",
+        "Siapa yang paling sering lupa bawa barang pas jalan?",
+        "Apa hal yang bikin kamu jatuh cinta ulang setiap hari?",
+        "Kalau kamu bisa ubah satu kebiasaan pasanganmu, apa itu?",
+        "Apa hal paling aneh yang pernah dia katakan tapi kamu tetap senang dengarnya?",
+        "Siapa yang paling sering bilang 'aku pengen es krim'?",
+        "Apa hal kecil yang paling kamu suka dari wajahnya?",
+        "Kalau kamu bisa habisin waktu seharian bareng, kamu pengen ngapain?",
+        "Siapa yang paling gampang baper gara-gara hal kecil?",
+        "Apa hal paling lucu waktu kalian saling salah paham?",
+        "Kalau pasanganmu jadi karakter kartun, dia cocoknya siapa?",
+        "Apa hal paling norak tapi romantis yang pernah kalian lakukan?",
+        "Siapa yang lebih sering ngambek tapi cepat luluh?",
+        "Apa hal yang paling kamu tunggu setiap kali ketemu dia?",
+        "Siapa yang paling sering nanya ‘lagi ngapain?’",
+        "Kalau kamu harus pilih satu momen untuk diulang, momen apa?",
+        "Apa hal paling konyol yang bikin kalian berdua ngakak bareng?",
+        "Siapa yang paling banyak alasan kalau disuruh ngaku salah?",
+        "Apa hal paling spontan yang pernah kamu lakukan untuk dia?",
+        "Kalau kamu bisa tulis surat cinta sekarang, apa kalimat pertamanya?",
+        "Siapa yang paling suka bercanda pas lagi serius?",
+        "Apa hal kecil yang bikin kamu nyadar kalau kamu nyaman banget sama dia?",
+        "Siapa yang paling sering selfie bareng?",
+        "Apa hal paling random yang dia suka tapi kamu ikutin juga?",
+        "Siapa yang lebih sering bilang ‘aku kangen’ tapi gengsi ngakuin?",
+        "Apa hal yang kamu pikirin kalau liat foto berdua?",
+        "Siapa yang paling sering minta peluk?",
+        "Apa hal paling lucu waktu kalian video call?",
+        "Siapa yang paling sering lupa matiin lampu?",
+        "Apa hal paling receh yang bisa bikin kalian berdua bahagia?",
+        "Siapa yang paling suka nyanyi fals tapi pede?",
+        "Apa hal yang paling kamu suka dari cara dia memandang kamu?",
+        "Siapa yang paling sering minta jajan?",
+        "Kalau kalian punya hewan peliharaan bareng, kamu pengen apa?",
+        "Apa hal paling romantis yang kamu pengen dia lakuin suatu hari nanti?",
+        "Siapa yang paling suka ngatur playlist musik pas jalan bareng?",
+        "Apa hal paling absurd yang pernah kalian obrolin?",
+        "Siapa yang paling gampang ngakak?",
+        "Apa hal yang bikin kamu tenang waktu bareng dia?",
+        "Siapa yang paling sering bilang ‘aku bete’?",
+        "Apa hal yang kamu pikirin kalau dia tiba-tiba diam?",
+        "Siapa yang paling sering minta perhatian dengan cara lucu?",
+        "Apa hal paling manis yang dia lakukan tanpa diminta?",
+        "Siapa yang paling sering lupa password?",
+        "Apa hal kecil yang kamu lakukan buat dia tanpa dia sadar?",
+        "Siapa yang paling sering nyuruh selfie bareng?",
+        "Apa hal paling lucu waktu pertama kali ketemu dia?",
+        "Siapa yang paling ribet milih tempat makan?",
+        "Apa hal yang bikin kamu pengen peluk dia tanpa alasan?",
+        "Siapa yang paling suka ngerayu duluan?",
+        "Apa hal paling romantis yang kamu bayangin bareng dia di masa depan?",
+        "Siapa yang paling gampang luluh kalau dikasih perhatian?",
+        "Apa hal yang bikin kamu yakin dia tulus?",
+        "Siapa yang paling suka ngelucu waktu suasana awkward?",
+        "Apa hal paling kocak yang pernah kamu bilang ke dia?",
+        "Siapa yang paling sering lupa naro HP?",
+        "Apa hal yang bikin kamu bangga punya dia?",
+        "Siapa yang paling gampang cemburu sama hal kecil?",
+        "Apa hal paling lucu yang pernah dia bilang pas ngantuk?",
+        "Siapa yang paling suka ngatur gaya foto?",
+        "Apa hal kecil yang bikin kamu ketawa tiap inget dia?",
+        "Siapa yang paling sering bikin drama kecil?",
+        "Apa hal yang kamu nggak bisa lupain dari pertama kali dia senyum?",
+        "Siapa yang paling sering kasih emot lucu di chat?",
+        "Apa hal paling lucu dari cara dia ngomong?",
+        "Siapa yang paling suka bilang ‘aku gemas’?",
+        "Apa hal yang bikin kamu jatuh cinta lagi tiap hari?",
+        "Siapa yang paling sering nonton film romantis?",
+        "Apa hal paling aneh tapi lucu dari hubungan kalian?",
+        "Siapa yang paling cepat ngerespon chat?",
+        "Apa hal yang kamu pikirin sebelum tidur tentang dia?",
+        "Siapa yang paling suka kasih kode halus?",
+        "Apa hal paling manis yang kamu pengen dengar dari dia?",
+        "Siapa yang paling sering kepo tentang hal kecil?",
+        "Apa hal paling lucu yang kalian pernah bahas tengah malam?",
+        "Siapa yang paling sering minta pijetin?",
+        "Apa hal paling aneh yang kalian lakukan bareng tapi seru?",
+        "Siapa yang paling sering ngelakuin hal random di depan kamu?",
+        "Apa hal paling lucu dari ekspresi wajah dia waktu panik?",
+        "Siapa yang paling sering lupa tugas atau kerjaan?",
+        "Apa hal paling lucu dari cara dia ngetik chat?",
+        "Siapa yang paling gampang grogi?",
+        "Apa hal paling bikin kamu melting dari dia?",
+        "Siapa yang paling sering minta ‘foto dulu’ sebelum makan?",
+        "Apa hal paling lucu waktu kalian saling ejek?",
+        "Siapa yang paling suka nyium pipi duluan?",
+        "Apa hal paling romantis yang dia lakuin tanpa sadar?",
+        "Siapa yang paling sering telat?",
+        "Apa hal paling random yang bikin kamu ingat dia?",
+        "Siapa yang paling suka ngelucu waktu momen serius?",
+        "Apa hal paling lucu yang kalian alami di tempat umum?",
+        "Siapa yang paling sering bilang ‘bentar lagi’ tapi lama?",
+        "Apa hal paling manis yang kamu dapet darinya?",
+        "Siapa yang paling sering nyebutin nama kamu di obrolan lain?",
+        "Apa hal yang bikin kamu makin cinta sama dia setiap hari?",
+        "Siapa yang paling sering bikin janji kecil tapi lucu?",
+        "Apa hal yang kamu pelajari dari cara dia sayangin kamu?"
+      ];
+      const darePrompts = [
+        "Kirim pesan manis ke pasanganmu sekarang.",
+        "Ucapkan gombalan terbaikmu selama 10 detik.",
+        "Berikan pelukan 10 detik sekarang.",
+        "Nyanyikan potongan lagu romantis dengan penuh perasaan.",
+        "Berikan pijatan ringan selama 30 detik.",
+        "Tirukan ekspresi pasanganmu saat sedang marah (lucu).",
+        "Kirim foto lucu (tanpa privasi) ke pasangan.",
+        "Buatkan puisi 1 bait dan bacakan sekarang.",
+        "Lakukan tarian lucu selama 15 detik.",
+        "Tantang pasangan untuk nyanyi bersama sekarang.",
+        "Kirim pesan manis ke pasanganmu sekarang.",
+        "Ucapkan gombalan terbaikmu selama 10 detik.",
+        "Berikan pelukan 10 detik sekarang.",
+        "Nyanyikan potongan lagu romantis dengan penuh perasaan.",
+        "Berikan pijatan ringan selama 30 detik.",
+        "Tirukan ekspresi pasanganmu saat sedang marah (lucu).",
+        "Kirim foto lucu (tanpa privasi) ke pasangan.",
+        "Buatkan puisi 1 bait dan bacakan sekarang.",
+        "Lakukan tarian lucu selama 15 detik.",
+        "Tantang pasangan untuk nyanyi bersama sekarang.",
+        "Tatap mata pasanganmu selama 10 detik tanpa ketawa.",
+        "Ucapkan gombalan spontan yang belum pernah kamu bilang.",
+        "Cium tangan pasanganmu dengan lembut.",
+        "Tulis ‘aku cinta kamu’ di udara pakai jari dan buat pasanganmu baca.",
+        "Ucapkan 3 alasan kenapa kamu bersyukur punya dia.",
+        "Kirim emoji yang menggambarkan perasaanmu sekarang ke pasangan.",
+        "Gombalin pasanganmu dengan gaya paling lebay tapi lucu.",
+        "Nyanyikan potongan lagu romantis favorit kalian.",
+        "Peluk pasanganmu selama 5 detik penuh kasih.",
+        "Pura-pura jadi pasanganmu dan tirukan cara dia bicara selama 10 detik.",
+        "Ceritakan momen pertama kali kamu sadar kamu suka dia.",
+        "Ucapkan kalimat ‘aku nggak bisa hidup tanpa kamu’ dengan gaya drama sinetron.",
+        "Ambil foto selfie lucu bareng pasanganmu sekarang juga.",
+        "Gambar hati di tanganmu dan kirim fotonya ke pasangan.",
+        "Buat pesan cinta singkat hanya dengan 3 kata.",
+        "Kirim stiker paling romantis yang kamu punya ke pasangan.",
+        "Lakukan pose romantis lalu kirim ke pasangan.",
+        "Ucapkan ‘aku kangen kamu’ pakai gaya paling imut.",
+        "Beri pasanganmu pujian jujur dari hati.",
+        "Tulis nama pasanganmu di kertas lalu hias dengan gambar hati.",
+        "Buat satu pantun cinta spontan untuk pasanganmu.",
+        "Gombalin pasanganmu dengan tema makanan.",
+        "Buat puisi pendek tentang pasanganmu.",
+        "Ucapkan ‘aku cinta kamu’ dalam 3 bahasa berbeda.",
+        "Ucapkan kalimat cinta tapi tiap katanya pakai nada lagu berbeda.",
+        "Kirim satu foto benda yang bikin kamu inget dia.",
+        "Tutup mata selama 5 detik dan bayangkan wajah pasanganmu, lalu bilang apa yang kamu bayangin.",
+        "Kirim pesan ‘aku rindu kamu’ tanpa emoji sama sekali.",
+        "Lakukan 3 kali tepuk tangan buat merayakan cinta kalian.",
+        "Panggil pasanganmu dengan panggilan paling manis yang bisa kamu pikirin.",
+        "Buat satu janji manis yang akan kamu tepati malam ini.",
+        "Lakukan gaya jantung pakai tangan dan kirim ke pasangan.",
+        "Ucapkan ‘aku bangga punya kamu’ dengan ekspresi paling tulus.",
+        "Kirim emoji yang menggambarkan hubungan kalian saat ini.",
+        "Nyanyikan lagu dengan lirik diganti jadi nama pasanganmu.",
+        "Kirim pesan teks yang bikin pasanganmu senyum baca-nya.",
+        "Katakan 5 hal kecil yang kamu suka dari pasanganmu.",
+        "Kirim GIF atau stiker paling bucin ke pasanganmu.",
+        "Bikin nada dering baru dari suara kamu bilang ‘sayang’.",
+        "Ucapkan kata ‘cinta’ sebanyak 10 kali tanpa berhenti.",
+        "Ceritakan hal paling konyol yang kamu lakuin demi cinta.",
+        "Kirim voice note 3 detik ngomong ‘muach~’.",
+        "Buat coretan kecil hati di kertas dan kirim fotonya.",
+        "Gombalin pasanganmu dengan tema film favorit kalian.",
+        "Kirim satu foto wajah senyum kamu sekarang.",
+        "Lakukan gaya supermodel tapi buat versi bucin.",
+        "Kirim emoji ❤️ setiap menit selama 3 menit.",
+        "Ucapkan kalimat cinta dengan gaya robot.",
+        "Tutup mata dan coba sebut tiga hal yang kamu suka dari dia.",
+        "Kirim foto benda di sekitarmu yang kamu anggap ‘romantis’.",
+        "Kirim pesan dengan hanya emoji, tanpa huruf.",
+        "Pura-pura jadi penyiar radio yang lagi siaran cinta.",
+        "Ceritakan mimpi lucu yang pernah kamu alami bareng pasangan (kalau ada).",
+        "Pura-pura jadi kucing yang manja sama pasangan.",
+        "Nyanyikan lagu yang paling bikin kamu inget pasanganmu.",
+        "Katakan ‘aku cinta kamu’ sambil tersenyum lebar di depan kamera.",
+        "Ucapkan 5 kalimat manis tanpa berhenti senyum.",
+        "Lakukan pose tangan berbentuk love dan kirim fotonya.",
+        "Ucapkan kata ‘sayang’ dalam 5 gaya berbeda.",
+        "Tulis pesan singkat romantis pakai kata berima.",
+        "Buat pantun bucin paling lucu yang bisa kamu pikirkan.",
+        "Lakukan gaya slow-motion seolah kamu di film romantis.",
+        "Kirim emoji 🍫🍓🍯 (simbol manis-manis) ke pasanganmu.",
+        "Ucapkan kalimat cinta pakai suara paling lucu kamu.",
+        "Ceritakan alasan kenapa pasanganmu unik.",
+        "Kirim pesan ‘aku kangen’ tapi hurufnya dibalik semua.",
+        "Kirim foto benda yang bentuknya mirip hati dari sekitarmu.",
+        "Buat pengakuan lucu yang belum pernah kamu bilang ke pasangan.",
+        "Tulis puisi mini 2 baris tentang cinta kalian.",
+        "Lakukan gaya lucu dan bilang ‘demi cinta’.",
+        "Katakan ‘aku sayang kamu’ dengan logat daerah lain.",
+        "Tulis kalimat cinta tapi tiap kata dimulai huruf A-Z berurutan (sebisa mungkin).",
+        "Tulis pesan cinta seolah kamu lagi di luar negeri.",
+        "Ceritakan momen pertama kali kamu deg-degan karena pasanganmu.",
+        "Gombalin pasanganmu tapi jangan pakai kata ‘cinta’.",
+        "Buat tantangan kecil buat pasanganmu balik.",
+        "Katakan ‘aku kangen kamu’ dengan gaya super serius.",
+        "Ucapkan 3 kata manis yang bukan ‘aku cinta kamu’.",
+        "Bikin gaya senyum paling manis dan kirim fotonya.",
+        "Kirim pesan pakai hanya satu huruf tapi harus romantis (contoh: ‘U’).",
+        "Tutup mata dan bilang hal pertama yang kamu pikirin tentang dia.",
+        "Ucapkan gombalan sambil pura-pura jadi penyanyi.",
+        "Kirim pesan ke pasanganmu ‘kamu tau gak aku lagi senyum karena apa?’.",
+        "Ucapkan satu kalimat cinta yang pakai perbandingan lucu.",
+        "Kirim emoji random tapi kasih makna cinta di baliknya.",
+        "Lakukan countdown 3...2...1... lalu bilang hal paling manis.",
+        "Kirim kata ‘muach’ 5 kali di chat.",
+        "Buat satu janji kecil yang bisa kamu tepati malam ini.",
+        "Katakan kalimat manis tapi dengan gaya bos mafia.",
+        "Kirim emoji yang kamu rasa paling menggambarkan dirimu saat cinta.",
+        "Gombalin pasanganmu seolah kamu lagi di film Disney.",
+        "Ucapkan kalimat cinta sambil tutup satu mata.",
+        "Tulis nama pasanganmu 3 kali dan kirim dengan emoji hati.",
+        "Kirim pesan ‘aku kangen’ tapi tiap huruf dikirim terpisah.",
+        "Ceritakan hal paling romantis yang kamu ingin coba bareng pasangan.",
+        "Kirim stiker paling bucin yang kamu punya sekarang juga.",
+        "Katakan ‘aku rindu’ tapi gaya aktingnya lebay banget.",
+        "Lakukan gaya lucu dan kirim foto bilang ‘demi cinta’.",
+        "Peluk pasanganmu selama 10 detik tanpa berkata apa-apa.",
+        "Tatap matanya selama 15 detik tanpa senyum.",
+        "Bisikkan 'aku sayang kamu' pelan di telinganya.",
+        "Cium punggung tangannya dengan lembut.",
+        "Gombalin pasanganmu seolah kamu lagi audisi jadi pacarnya.",
+        "Pujilah pasanganmu seolah dia bintang film favoritmu.",
+        "Nyanyikan lagu cinta dengan gaya opera ke pasanganmu.",
+        "Pegang tangan pasanganmu dan bilang 3 hal yang kamu syukuri darinya.",
+        "Lihat matanya sambil bilang ‘aku beruntung punya kamu’.",
+        "Tulis ‘aku cinta kamu’ pakai jari di telapak tangannya.",
+        "Sentuh hidung pasanganmu dan bilang ‘boop!’ 😘",
+        "Lakukan pose lucu bareng dan ambil selfie sekarang.",
+        "Pura-pura jadi pasangan super romantis di film selama 15 detik.",
+        "Bisikkan satu rahasia kecil yang kamu belum pernah bilang.",
+        "Tunjukkan ekspresi paling gemasmu ke pasanganmu.",
+        "Pura-pura minta maaf seolah kamu baru lupa tanggal jadian.",
+        "Baca puisi pendek tentang cinta, buat spontan!",
+        "Nyanyikan satu bait lagu romantis pilihan pasanganmu.",
+        "Bikin pasanganmu senyum tanpa menyentuhnya.",
+        "Pegang pipinya dan bilang, ‘kamu gemes banget’.",
+        "Cium kening pasanganmu sambil bilang sesuatu manis.",
+        "Tiru gaya pasanganmu saat lagi ngambek.",
+        "Pura-pura jadi penyiar radio yang lagi ngasih dedikasi lagu cinta.",
+        "Pegang bahunya dan bilang ‘aku di sini buat kamu’.",
+        "Genggam tangannya dan hitung sampai 10 tanpa lepas.",
+        "Cium udara di depan bibir pasanganmu tanpa benar-benar menyentuhnya.",
+        "Kasih pijatan lembut di pundak pasanganmu.",
+        "Buat pasanganmu tertawa dalam waktu 15 detik.",
+        "Pura-pura melamar pasanganmu pakai benda terdekat.",
+        "Katakan kalimat cinta paling lebay yang bisa kamu buat.",
+        "Gigit pelan bantal sambil bilang ‘aku kangen kamu’ 😂",
+        "Tatap pasanganmu dengan pandangan menggoda selama 10 detik.",
+        "Genggam wajahnya dengan dua tangan dan bilang ‘kamu lucu banget’.",
+        "Gombal pasanganmu dengan kalimat yang paling cringe.",
+        "Pura-pura jadi pasangan bucin di sinetron.",
+        "Tunjukkan emoji wajah yang menggambarkan perasaanmu saat ini.",
+        "Pura-pura jadi fotografer dan arahkan pose pasanganmu.",
+        "Tiru cara pasanganmu tertawa.",
+        "Bisikkan ke telinganya sesuatu yang bikin dia senyum.",
+        "Sentuh ujung hidung pasanganmu pakai jarimu.",
+        "Buat janji manis kecil untuk pasanganmu.",
+        "Katakan sesuatu yang kamu kagumi dari dirinya.",
+        "Cium tangan pasanganmu lalu tersenyum malu-malu.",
+        "Berikan tatapan cinta paling intens selama 8 detik.",
+        "Kirim emoji hati ke pasanganmu (kalau main online 😆).",
+        "Katakan sesuatu romantis dengan gaya rapper.",
+        "Tiru gaya pasanganmu waktu lagi marah.",
+        "Kasih high-five romantis dengan jari telunjuk.",
+        "Lakukan dansa lambat selama 15 detik.",
+        "Genggam tangan pasanganmu dan bilang ‘jangan pernah lepas ya’.",
+        "Berikan sentuhan lembut di pipi pasanganmu sambil tersenyum.",
+        "Katakan sesuatu flirty tapi tetap sopan.",
+        "Bisikkan, ‘aku rindu kamu padahal kamu di depan aku’.",
+        "Tiru gaya pasanganmu waktu lagi manja.",
+        "Buat pasanganmu malu (dengan cara yang lucu).",
+        "Katakan 5 hal yang bikin kamu jatuh cinta padanya.",
+        "Pegang dagunya dan bilang, ‘ih, kenapa kamu segemes ini sih’.",
+        "Ucapkan 3 gombalan terbaikmu berturut-turut.",
+        "Sentuh kening pasanganmu dengan keningmu.",
+        "Pura-pura jadi Romeo dan Juliet versi bucin.",
+        "Lakukan gaya supermodel bareng pasanganmu.",
+        "Bikin pasanganmu tertawa pakai suara paling aneh.",
+        "Katakan ‘aku cinta kamu’ dengan gaya orang ngantuk.",
+        "Sentuh jari pasanganmu dan bilang ‘klik! hati kita nyambung’.",
+        "Pura-pura malu banget pas pasanganmu muji kamu.",
+        "Lakukan dance kecil di depan pasanganmu.",
+        "Pura-pura jadi penyair cinta yang gagal.",
+        "Nyanyikan lagu cinta pakai gaya robot.",
+        "Tatap pasanganmu sambil bilang ‘aku kalah, kamu menang di hatiku’.",
+        "Pura-pura jadi pasangan yang baru pertama kali ketemu.",
+        "Buat wajah paling manis yang kamu bisa.",
+        "Sentuh bahu pasanganmu dan bilang ‘aku bangga sama kamu’.",
+        "Bisikkan ke pasanganmu satu hal yang kamu suka banget darinya.",
+        "Cium punggung tangan pasanganmu 3 kali berturut-turut.",
+        "Tiru gaya pasanganmu waktu lagi senang banget.",
+        "Katakan ‘aku nggak bisa marah sama kamu, soalnya kamu lucu banget’.",
+        "Tiru suara pasanganmu waktu lagi panggil kamu.",
+        "Peluk dari belakang selama 5 detik.",
+        "Sentuh rambut pasanganmu dan bilang ‘halus banget kayak hati kamu’.",
+        "Pura-pura jadi pembawa acara cinta di TV.",
+        "Ucapkan kalimat cinta dalam bahasa asing (improvisasi boleh 😄).",
+        "Tatap pasanganmu dan bilang ‘aku milik kamu, titik’.",
+        "Sentuh pipinya pelan dan bilang ‘aku suka kamu kayak gini’.",
+        "Buat pasanganmu merah pipinya tanpa menyentuh.",
+        "Kirim emoji 💖 di chat pasanganmu sekarang juga.",
+        "Bercanda romantis seolah kamu di film drama Korea.",
+        "Gombal pasanganmu pakai nama makanan.",
+        "Tiru cara pasanganmu bilang ‘aku sayang kamu’.",
+        "Sentuh pundaknya dan bilang ‘aku di sini selalu’.",
+        "Katakan ‘aku cinta kamu’ sambil pura-pura marah.",
+        "Tunjukkan ekspresi paling bucinmu sekarang.",
+        "Pura-pura telepon pasanganmu dan bilang ‘aku rindu banget’.",
+        "Tiru suara hewan tapi dengan nada romantis (😂).",
+        "Tatap pasanganmu sambil bilang ‘kalau kamu bintang, aku langitnya’.",
+        "Sentuh tangan pasanganmu dan bilang ‘ini tangan yang aku cari’.",
+        "Lakukan gaya paling bucin yang kamu bisa.",
+        "Katakan sesuatu yang membuat pasanganmu tersipu malu."
+      ];
+
+      const romanticAdd = [
+        "Sebutkan tiga hal kecil yang membuatmu jatuh cinta tiap hari.",
+        "Ceritakan momen ketika kamu merasa sangat dicintai olehnya.",
+        "Jika kalian nikah, di mana honeymoon impianmu?"
+      ];
+      const funnyAdd = [
+        "Sebutkan kata-kata gombal terburuk yang pernah kamu ucapkan.",
+        "Tirukan suara hewan favorit pasanganmu.",
+        "Sebutkan kebiasaan aneh pasangan yang bikin ngakak."
+      ];
+
+      // Create 1000 items by sampling templates and adding index to make them unique
+      let id = 1;
+      while (arr.length < 1000) {
+        // alternate roughly between truth/dare and romantic/funny
+        const type = (Math.random() < 0.5) ? 'truth' : 'dare';
+        const moodRand = Math.random();
+        const mood = moodRand < 0.45 ? 'romantic' : (moodRand < 0.9 ? 'funny' : 'mixed');
+
+        // pick base prompt
+        let base;
+        if (type === 'truth') {
+          base = truthPrompts[Math.floor(Math.random()*truthPrompts.length)];
+        } else {
+          base = darePrompts[Math.floor(Math.random()*darePrompts.length)];
+        }
+
+        // add mood-specific extras sometimes
+        if (mood === 'romantic' && Math.random() < 0.4) {
+          base += " " + romanticAdd[Math.floor(Math.random()*romanticAdd.length)];
+        } else if (mood === 'funny' && Math.random() < 0.35) {
+          base += " " + funnyAdd[Math.floor(Math.random()*funnyAdd.length)];
+        }
+
+        // make unique by adding index hint (this is placeholder; replace with actual questions later)
+        const text = `${type === 'truth' ? 'Truth' : 'Dare'}: ${base} [#${id}]`;
+        arr.push({ id, type, mood, text });
+        id++;
+      }
+      return arr;
+    })();
+
+    /**************************************************************************
+     * App State (using localStorage keys)
+     **************************************************************************/
+    const LS_KEYS = {
+      SHOWN: 'tod_shown_indices_v1',
+      FAVORITES: 'tod_favorites_v1',
+      THEME: 'tod_theme_v1',
+      MODE: 'tod_mode_v1' // 'mixed' | 'romantic' | 'funny'
+    };
+
+    // state
+    let shownIndices = new Set(JSON.parse(localStorage.getItem(LS_KEYS.SHOWN) || "[]"));
+    let favorites = new Set(JSON.parse(localStorage.getItem(LS_KEYS.FAVORITES) || "[]"));
+    let currentIndex = null; // index in questions array
+    let lastShownId = null;
+    let mode = localStorage.getItem(LS_KEYS.MODE) || 'mixed'; // default mixed
+    let theme = localStorage.getItem(LS_KEYS.THEME) || 'light';
+    let filteredList = null; // array of indices filtered by mood/type
+
+    // DOM
+    const landing = document.getElementById('landing');
+    const startBtn = document.getElementById('startBtn');
+    const howBtn = document.getElementById('howBtn');
+    const gameScreen = document.getElementById('gameScreen');
+    const questionCard = document.getElementById('questionCard');
+    const questionText = document.getElementById('questionText');
+    const truthBtn = document.getElementById('truthBtn');
+    const dareBtn = document.getElementById('dareBtn');
+    const nextBtn = document.getElementById('nextBtn');
+    const shuffleBtn = document.getElementById('shuffleBtn');
+    const favBtn = document.getElementById('favBtn');
+    const modeBtn = document.getElementById('modeBtn');
+    const myFavsBtn = document.getElementById('myFavs');
+    const resetBtn = document.getElementById('resetBtn');
+    const backHome = document.getElementById('backHome');
+    const settingsBtn = document.getElementById('settingsBtn');
+    const modalBackdrop = document.getElementById('modalBackdrop');
+    const modalContent = document.getElementById('modalContent');
+    const modeTag = document.getElementById('modeTag');
+    const favIcon = favBtn;
+
+    // confetti
+    const confettiCanvas = document.getElementById('confetti-canvas');
+    const confettiCtx = confettiCanvas.getContext('2d');
+    let confettiPieces = [];
+
+    // audio (simple chime using WebAudio)
+    let audioCtx = null;
+    function chime(){
+      try{
+        if(!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        const o = audioCtx.createOscillator();
+        const g = audioCtx.createGain();
+        o.type = 'sine';
+        o.frequency.setValueAtTime(880, audioCtx.currentTime);
+        g.gain.setValueAtTime(0.0001, audioCtx.currentTime);
+        g.gain.exponentialRampToValueAtTime(0.08, audioCtx.currentTime + 0.02);
+        g.gain.exponentialRampToValueAtTime(0.0001, audioCtx.currentTime + 0.5);
+        o.connect(g); g.connect(audioCtx.destination);
+        o.start();
+        o.stop(audioCtx.currentTime + 0.55);
+      }catch(e){
+        // ignore
+      }
+    }
+
+    /**************************************************************************
+     * Helpers
+     **************************************************************************/
+    function saveLS(){
+      localStorage.setItem(LS_KEYS.SHOWN, JSON.stringify([...shownIndices]));
+      localStorage.setItem(LS_KEYS.FAVORITES, JSON.stringify([...favorites]));
+      localStorage.setItem(LS_KEYS.MODE, mode);
+      localStorage.setItem(LS_KEYS.THEME, theme);
+    }
+
+    function setTheme(t){
+      theme = t;
+      if(t === 'dark') document.body.classList.add('dark');
+      else document.body.classList.remove('dark');
+      saveLS();
+    }
+
+    function setMode(m){
+      mode = m;
+      modeTag.textContent = `Mode: ${m.charAt(0).toUpperCase() + m.slice(1)}`;
+      saveLS();
+    }
+
+    function getFilteredIndices({type=null} = {}){
+      // returns array of indices matching current mode and optional type
+      const list = [];
+      for(let i=0;i<questions.length;i++){
+        const q = questions[i];
+        // mode filter
+        if(mode === 'romantic' && q.mood !== 'romantic') continue;
+        if(mode === 'funny' && q.mood !== 'funny') continue;
+        // type filter if provided
+        if(type && q.type !== type) continue;
+        list.push(i);
+      }
+      return list;
+    }
+
+    function pickRandomIndex({type=null} = {}){
+      const pool = getFilteredIndices({type}).filter(i => !shownIndices.has(questions[i].id));
+      if(pool.length === 0){
+        // if none left unused, maybe allow repeats except lastShown to allow play, or signal finished.
+        return null;
+      }
+      const idx = pool[Math.floor(Math.random()*pool.length)];
+      return idx;
+    }
+
+    function showQuestionByIndex(idx, animate=true){
+      if(idx === null){
+        // finished
+        questionText.innerHTML = `Kalian luar biasa! Semua pertanyaan sudah dijawab ❤️`;
+        animateCard();
+        runConfetti();
+        chime();
+        return;
+      }
+      currentIndex = idx;
+      const q = questions[idx];
+      // ensure not same as last shown
+      if(lastShownId === q.id){
+        // try to pick different one (up to 5 tries)
+        let tries = 0;
+        let alt = idx;
+        while(alt === idx && tries < 6){
+          alt = pickRandomIndex({type: q.type});
+          tries++;
+        }
+        if(alt !== null && alt !== idx) idx = alt;
+      }
+
+      const final = questions[idx];
+      lastShownId = final.id;
+      shownIndices.add(final.id);
+      saveLS();
+      questionText.innerHTML = `<div style="font-size:16px; color:#ff477a; font-weight:700; margin-bottom:8px">${final.type.toUpperCase()}</div>${final.text}`;
+      animateCard();
+      chime();
+      // if all are shown now, trigger confetti on next show
+      if(shownIndices.size >= questions.length){
+        // finished state handled when next requested
+      }
+    }
+
+    function animateCard(){
+      questionCard.classList.remove('fade-in');
+      // force reflow
+      void questionCard.offsetWidth;
+      questionCard.classList.add('fade-in');
+    }
+
+    function fisherYatesShuffle(array){
+      for(let i = array.length - 1; i > 0; i--){
+        const j = Math.floor(Math.random()*(i+1));
+        [array[i], array[j]] = [array[j], array[i]];
+      }
+      return array;
+    }
+
+    function shuffleAll(){
+      // shuffle questions array in place (won't change ids but order)
+      // To keep referential integrity, we can shuffle by rotating array positions
+      const arr = questions;
+      fisherYatesShuffle(arr);
+      // resetting shownIndices also
+      shownIndices = new Set();
+      currentIndex = null;
+      lastShownId = null;
+      saveLS();
+      showTemporaryNotice("Semua pertanyaan diacak ulang ✅");
+    }
+
+    function toggleFavoriteCurrent(){
+      if(currentIndex === null) return;
+      const id = questions[currentIndex].id;
+      if(favorites.has(id)) {
+        favorites.delete(id);
+        showTemporaryNotice("Dihapus dari Favorit");
+      } else {
+        favorites.add(id);
+        showTemporaryNotice("Disimpan ke Favorit ❤️");
+      }
+      saveLS();
+    }
+
+    function showTemporaryNotice(msg, timeout=1400){
+      const original = questionText.innerHTML;
+      questionText.innerHTML = `<div style="font-weight:700; font-size:18px">${msg}</div>`;
+      animateCard();
+      setTimeout(()=>{ questionText.innerHTML = original; animateCard(); }, timeout);
+    }
+
+    function openModal(title, innerHTML){
+      modalContent.innerHTML = `<div style="display:flex; justify-content:space-between; align-items:center; gap:12px;">
+        <h3 style="margin:0">${title}</h3>
+        <button id="closeModal" class="btn secondary">Tutup</button>
+      </div>
+      <div style="margin-top:12px">${innerHTML}</div>`;
+      modalBackdrop.classList.add('active');
+      modalBackdrop.setAttribute('aria-hidden','false');
+
+      document.getElementById('closeModal').addEventListener('click', closeModal);
+    }
+    function closeModal(){ modalBackdrop.classList.remove('active'); modalBackdrop.setAttribute('aria-hidden','true'); }
+
+    function showHowTo(){
+      openModal('Cara Main', `
+        <p><strong>Aturan singkat:</strong></p>
+        <ol>
+          <li>Pilih "Truth" untuk pertanyaan jujur atau "Dare" untuk tantangan.</li>
+          <li>Tekan "Next Question" untuk pertanyaan baru yang belum muncul.</li>
+          <li>Gunakan "Favoritkan" untuk menyimpan pertanyaan yang kalian suka.</li>
+          <li>Mode: ganti ke <em>Romantis</em> atau <em>Lucu</em> untuk merubah suasana pertanyaan.</li>
+        </ol>
+        <p class="muted">Data favorit dan progress akan tersimpan di browser (localStorage).</p>
+      `);
+    }
+
+    function showFavorites(){
+      const favArr = [...favorites].map(id => questions.find(q => q.id === id)).filter(Boolean);
+      let content = '';
+      if(favArr.length === 0) content = `<p>Tidak ada favorit. Tekan ❤️ Favoritkan saat pertanyaan muncul untuk menambah.</p>`;
+      else {
+        content = `<div class="fav-list">` + favArr.map(q => `
+          <div class="fav-item">
+            <div style="flex:1">
+              <div style="font-weight:700">${q.type.toUpperCase()}</div>
+              <div style="font-size:14px; margin-top:6px">${q.text}</div>
+            </div>
+            <div style="display:flex; flex-direction:column; gap:6px; align-items:flex-end;">
+              <button class="btn smallBtn" data-id="${q.id}">Pilih</button>
+              <button class="btn secondary removeBtn" data-id="${q.id}">Hapus</button>
+            </div>
+          </div>
+        `).join('') + `</div>`;
+      }
+      openModal('Favoritku ❤️', content);
+
+      // add listeners for pick and remove
+      document.querySelectorAll('.smallBtn').forEach(btn=>{
+        btn.addEventListener('click', (e)=>{
+          const id = Number(e.currentTarget.dataset.id);
+          // find index
+          const idx = questions.findIndex(q=>q.id===id);
+          if(idx>=0){
+            showQuestionByIndex(idx);
+            closeModal();
+          }
+        });
+      });
+      document.querySelectorAll('.removeBtn').forEach(btn=>{
+        btn.addEventListener('click', (e)=>{
+          const id = Number(e.currentTarget.dataset.id);
+          favorites.delete(id);
+          saveLS();
+          showFavorites(); // refresh modal
+        });
+      });
+    }
+
+    function showSettings(){
+      openModal('Pengaturan ⚙️', `
+        <div style="display:flex; gap:12px; flex-wrap:wrap;">
+          <div>
+            <div style="font-weight:700; margin-bottom:6px">Tema</div>
+            <div style="display:flex; gap:8px;">
+              <button class="btn themeBtn" data-theme="light">☀️ Light</button>
+              <button class="btn themeBtn" data-theme="dark">🌙 Dark</button>
+            </div>
+          </div>
+
+          <div>
+            <div style="font-weight:700; margin-bottom:6px">Mode</div>
+            <div style="display:flex; gap:8px;">
+              <button class="btn modeSel" data-mode="mixed">Mixed</button>
+              <button class="btn modeSel" data-mode="romantic">Romantis</button>
+              <button class="btn modeSel" data-mode="funny">Lucu</button>
+            </div>
+          </div>
+        </div>
+
+        <div style="margin-top:12px;">
+          <button class="btn secondary" id="resetGameBtn">Reset permainan (hapus progress & favorit)</button>
+        </div>
+      `);
+
+      document.querySelectorAll('.themeBtn').forEach(b=>{
+        b.addEventListener('click', e=>{
+          const t = e.currentTarget.dataset.theme;
+          setTheme(t);
+          closeModal();
+        });
+      });
+
+      document.querySelectorAll('.modeSel').forEach(b=>{
+        b.addEventListener('click', e=>{
+          const m = e.currentTarget.dataset.mode;
+          setMode(m);
+          closeModal();
+        });
+      });
+
+      document.getElementById('resetGameBtn').addEventListener('click', ()=>{
+        if(confirm('Reset permainan? Ini akan menghapus favorit dan progress.')){
+          localStorage.removeItem(LS_KEYS.SHOWN);
+          localStorage.removeItem(LS_KEYS.FAVORITES);
+          shownIndices = new Set();
+          favorites = new Set();
+          saveLS();
+          closeModal();
+          showTemporaryNotice('Progress direset ✅');
+        }
+      });
+    }
+
+    function resetAllData(){
+      if(confirm('Yakin ingin menghapus semua data lokal dan mulai ulang?')){
+        localStorage.removeItem(LS_KEYS.SHOWN);
+        localStorage.removeItem(LS_KEYS.FAVORITES);
+        localStorage.removeItem(LS_KEYS.MODE);
+        localStorage.removeItem(LS_KEYS.THEME);
+        shownIndices = new Set();
+        favorites = new Set();
+        setMode('mixed');
+        setTheme('light');
+        showTemporaryNotice('Data dihapus. Siap mulai ulang!');
+      }
+    }
+
+    /**************************************************************************
+     * Event bindings
+     **************************************************************************/
+    startBtn.addEventListener('click', ()=>{
+      landing.style.display = 'none';
+      gameScreen.classList.add('active');
+      gameScreen.setAttribute('aria-hidden','false');
+      // update mode tag
+      setMode(mode);
+      setTheme(theme);
+      // if no previous question displayed, auto pick a mixed random to show hint
+      if(currentIndex === null){
+        questionText.innerHTML = `Tekan Truth atau Dare untuk mendapatkan pertanyaan pertama 🎲`;
+      }
+    });
+
+    howBtn.addEventListener('click', showHowTo);
+
+    truthBtn.addEventListener('click', ()=>{
+      const idx = pickRandomIndex({type:'truth'});
+      if(idx === null){
+        // no more available
+        showQuestionByIndex(null);
+      } else showQuestionByIndex(idx);
+    });
+
+    dareBtn.addEventListener('click', ()=>{
+      const idx = pickRandomIndex({type:'dare'});
+      if(idx === null) showQuestionByIndex(null);
+      else showQuestionByIndex(idx);
+    });
+
+    nextBtn.addEventListener('click', ()=>{
+      // pick any type
+      const idx = pickRandomIndex();
+      if(idx === null) showQuestionByIndex(null);
+      else showQuestionByIndex(idx);
+    });
+
+    shuffleBtn.addEventListener('click', ()=>{
+      if(confirm('Acak ulang semua pertanyaan dan reset progress?')){
+        shuffleAll();
+      }
+    });
+
+    favBtn.addEventListener('click', ()=>{
+      toggleFavoriteCurrent();
+    });
+
+    modeBtn.addEventListener('click', ()=>{
+      // cycle modes: mixed -> romantic -> funny -> mixed
+      if(mode === 'mixed') setMode('romantic');
+      else if(mode === 'romantic') setMode('funny');
+      else setMode('mixed');
+      showTemporaryNotice(`Mode: ${mode}`);
+    });
+
+    myFavsBtn.addEventListener('click', showFavorites);
+
+    resetBtn.addEventListener('click', resetAllData);
+
+    backHome.addEventListener('click', ()=>{
+      gameScreen.classList.remove('active');
+      landing.style.display = 'block';
+    });
+
+    settingsBtn.addEventListener('click', showSettings);
+
+    modalBackdrop.addEventListener('click', (e)=>{
+      if(e.target === modalBackdrop) closeModal();
+    });
+
+    // keyboard shortcuts (optional)
+    document.addEventListener('keydown', (e)=>{
+      if(e.key === 't' || e.key === 'T') truthBtn.click();
+      if(e.key === 'd' || e.key === 'D') dareBtn.click();
+      if(e.key === 'n' || e.key === 'N') nextBtn.click();
+      if(e.key === 'f' || e.key === 'F') favBtn.click();
+    });
+
+    /**************************************************************************
+     * Confetti (simple)
+     **************************************************************************/
+    function setupConfettiCanvas(){
+      function resize(){
+        confettiCanvas.width = confettiCanvas.clientWidth;
+        confettiCanvas.height = confettiCanvas.clientHeight;
+      }
+      // expand to container size
+      confettiCanvas.style.width = '100%';
+      confettiCanvas.style.height = '100%';
+      resize();
+      window.addEventListener('resize', resize);
+    }
+    function runConfetti(){
+      // create pieces
+      const num = 80;
+      confettiPieces = [];
+      for(let i=0;i<num;i++){
+        confettiPieces.push({
+          x: Math.random()*confettiCanvas.width,
+          y: Math.random()*-confettiCanvas.height,
+          vx: (Math.random()-0.5)*2,
+          vy: 2 + Math.random()*4,
+          size: 6 + Math.random()*8,
+          rot: Math.random()*360,
+          color: ['#ff6fa3','#ffd1e6','#ffd8b6','#bfe7ff','#ffe6f2'][Math.floor(Math.random()*5)]
+        });
+      }
+      // run animate for 2.5s
+      let tEnd = performance.now()+2500;
+      function frame(now){
+        confettiCtx.clearRect(0,0,confettiCanvas.width,confettiCanvas.height);
+        for(const p of confettiPieces){
+          p.x += p.vx;
+          p.y += p.vy;
+          p.rot += p.vx*5;
+          confettiCtx.save();
+          confettiCtx.translate(p.x,p.y);
+          confettiCtx.rotate(p.rot*Math.PI/180);
+          confettiCtx.fillStyle = p.color;
+          confettiCtx.fillRect(-p.size/2,-p.size/2,p.size,p.size);
+          confettiCtx.restore();
+        }
+        if(performance.now() < tEnd){
+          requestAnimationFrame(frame);
+        } else {
+          confettiCtx.clearRect(0,0,confettiCanvas.width,confettiCanvas.height);
+        }
+      }
+      requestAnimationFrame(frame);
+    }
+
+    /**************************************************************************
+     * Init: apply saved theme/mode & canvas setup
+     **************************************************************************/
+    (function init(){
+      // apply theme/mode
+      setMode(mode);
+      setTheme(theme === 'dark' ? 'dark' : 'light');
+      // resize canvas
+      setupConfettiCanvas();
+      // Show simple landing (already visible)
+    })();
+
+    /**************************************************************************
+     * Make sure the app is offline-capable: everything in one file; no external API required.
+     * You can replace `questions` generation with real 1000-question data later (in same format).
+     **************************************************************************/
+
+    // Expose some helpers to window for debugging (optional)
+    window.TOD = {
+      questions,
+      shownIndices,
+      favorites,
+      pickRandomIndex,
+      showQuestionByIndex,
+      shuffleAll,
+      setMode,
+      setTheme,
+      saveLS
+    };
+  </script>
+</body>
+</html>
